@@ -2,133 +2,129 @@
 
 @section('title', 'Product Showcase')
 
-<style>
-    .product {
-        padding: 60px 20px;
-        background: radial-gradient(circle, rgba(25,121,54,0.9) 0%, rgba(0,0,0,0.9) 100%);
-    }
-    .product-container {
-        display: flex;
-        justify-content: center;
-        gap: 30px;
-        flex-wrap: wrap;
-    }
-    .product-card {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 15px;
-        padding: 20px;
-        width: 500px;
-        text-align: center;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.4);
-        transition: transform 0.3s;
-        display: flex;
-        flex-direction: column;
-        display: flex;
-        justify-content: space-between;
-    }
+<link rel="stylesheet" href="{{ asset('assets/product-listing.css') }}">
 
-    .product-card:hover {
-        transform: translateY(-5px);
-    }
-    .product-card img {
-        width: 400px;
-        height: 250px;
-        object-fit: cover;
-        border-radius: 10px;
-        margin-bottom: 15px;
-    }
-    .product-card h3 {
-        color: #fff;
-        margin-bottom: 10px;
-    }
-    .product-card ul {
-        text-align: left;
-        margin: 0 auto 15px;
-        padding: 0;
-        list-style: disc inside;
-        color: #ddd;
-    }
-    .product-card ul li {
-        margin-bottom: 8px;
-    }
-    .btn-add {
-        background: #22c55e;
-        color: #fff;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background 0.3s;
-        margin-top: auto;
-        text-decoration: none;
-    }
-    .btn-add:hover {
-        background: #16a34a;
-    }
+<main>
+  <section class="product">
+    <h2>Our Eco-Friendly Products</h2>
+    <p>Discover the latest smart plastic detection sensors designed to help you reduce waste and track your daily plastic usage effectively.</p>
 
-    .card-bottom {
-    margin-top: auto;
-    }
-    
-    footer {
-      padding: 30px 20px;
-      text-align: center;
-      color: #aaa;
-      font-size: 0.9rem;
-      background: #0d0d0d;
-    }
-</style>
+    <div class="product-container">
+      <!-- Product 1 -->
+      <div class="product-card">
+        <div class="slider-container">
+          <div class="slider-images">
+            <img src="{{ asset('images/slide5.jpg') }}" alt="Plastic Sensor 1">
+            <img src="{{ asset('images/slide6.jpg') }}" alt="Plastic Sensor 1 alt">
+          </div>
+          <button class="slider-btn prev-btn">&#10094;</button>
+          <button class="slider-btn next-btn">&#10095;</button>
+        </div>
+        <h3>Plastic Detection Sensor 1</h3>
+        <ul>
+          <li>Smart plastic detection technology</li>
+          <li>Enhanced detection accuracy</li>
+          <li>Tracks daily plastic usage</li>
+        </ul>
+        <div class="card-bottom">
+          <p>For as low as $500</p>
+          @auth
+              @if(Auth::user()->utype === 'CUST')
+                  <a class="btn-add" href="#">Order Now</a>
+              @endif
+          @else
+              <a class="btn-add" href="{{ route('login') }}">Login to Order</a>
+          @endauth
+        </div>
+      </div>
 
-<section class="product container">
-  <div class="product-container">
-    <!-- Product 1 -->
-    <div class="product-card">
-      <img src="{{ asset('images/slide5.jpg') }}" alt="Plastic Detection Sensor">
-      <h3>Plastic Detection Sensor 1</h3>
-      <ul>
-        <li>Smart plastic detection technology</li>
-        <li>Enhanced detection accuracy</li>
-        <li>Tracks daily plastic usage</li>
-      </ul>
-      <div class="card-bottom">
-      <p>For as low as $500</p>
-    @auth
-    @if(Auth::user()->utype === 'CUST')
-        <a class="btn-add" href="#">Order Now</a>
-    @endif
-    @else
-        <a class="btn-add" href="{{ route('login') }}">Login to Order</a>
-    @endauth
+      <!-- Product 2 -->
+      <div class="product-card">
+        <div class="slider-container">
+          <div class="slider-images">
+            <img src="{{ asset('images/slide5.jpg') }}" alt="Plastic Sensor 2">
+            <img src="{{ asset('images/slide7.jpg') }}" alt="Plastic Sensor 2 alt">
+          </div>
+          <button class="slider-btn prev-btn">&#10094;</button>
+          <button class="slider-btn next-btn">&#10095;</button>
+        </div>
+        <h3>Plastic Detection Sensor 2</h3>
+        <ul>
+          <li>Lightweight and portable</li>
+          <li>Smart plastic detection technology</li>
+          <li>Enhanced detection accuracy</li>
+          <li>Tracks daily plastic usage</li>
+          <li>Personalized EcoScan website access</li>
+          <li>Includes sustainability web dashboard</li>
+        </ul>
+        <div class="card-bottom">
+          <p>For as low as $1500</p>
+          @auth
+              @if(Auth::user()->utype === 'CUST')
+                  <a class="btn-add" href="#">Order Now</a>
+              @endif
+          @else
+              <a class="btn-add" href="{{ route('login') }}">Login to Order</a>
+          @endauth
+        </div>
+      </div>
     </div>
-    </div>
+  </section>
+</main>
 
-    <!-- Product 2 -->
-    <div class="product-card">
-      <img src="{{ asset('images/slide5.jpg') }}" alt="Plastic Detection Sensor">
-      <h3>Plastic Detection Sensor 2</h3>
-      <ul>
-        <li>Lightweight and portable</li>
-        <li>Smart plastic detection technology</li>
-        <li>Enhanced detection accuracy</li>
-        <li>Tracks daily plastic usage</li>
-        <li>Personalized EcoScan website access</li>
-        <li>Includes sustainability web dashboard</li>
-      </ul>
-      <div class="card-bottom">
-        <p>For as low as $1500</p>
-    @auth
-    @if(Auth::user()->utype === 'CUST')
-        <a class="btn-add" href="#">Order Now</a>
-    @endif
-    @else
-        <a class="btn-add" href="{{ route('login') }}">Login to Order</a>
-    @endauth
-    </div>
-    </div>  
-  </div>
-</section>
+<!-- Footer -->
+<footer>
+  &copy; 2025 EcoScan. All rights reserved.
+</footer>
 
-  <!-- Footer -->
-  <footer>
-    &copy; 2025 EcoScan. All rights reserved.
-  </footer>
+<!-- Dark/Light Mode Toggle -->
+<div class="theme-toggle">
+  <label class="switch">
+    <input type="checkbox" id="mode-toggle">
+    <span class="slider"></span>
+  </label>
+</div>
+
+<script>
+    // =====================
+    // Theme Toggle
+    // =====================
+    const toggle = document.getElementById('mode-toggle');
+    const body = document.body;
+
+    // Initialize theme from localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        body.classList.add('dark-mode');
+        toggle.checked = true;
+    }
+
+    toggle.addEventListener('change', () => {
+        if (toggle.checked) {
+            body.classList.add('dark-mode');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            body.classList.remove('dark-mode');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+
+    // =====================
+    // Image Slider
+    // =====================
+    document.querySelectorAll('.product-card').forEach(card => {
+        const images = card.querySelector('.slider-images');
+        const imgs = images.querySelectorAll('img');
+        const prevBtn = card.querySelector('.prev-btn');
+        const nextBtn = card.querySelector('.next-btn');
+        let index = 0;
+
+        function showSlide(i) {
+            index = (i + imgs.length) % imgs.length;
+            images.style.transform = `translateX(-${index * 100}%)`;
+        }
+
+        prevBtn.addEventListener('click', () => showSlide(index - 1));
+        nextBtn.addEventListener('click', () => showSlide(index + 1));
+    });
+</script>
