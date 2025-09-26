@@ -1,215 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="{{ asset('favicon.ico') }}">
+@include('layout.shopping-base')
 
-    <title>Reset Password</title>
-    <style>
-        /* General styling */
-        body {
-            background: url("../images/coverwel2.png") no-repeat center center/cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            position: relative;
-        }
+<link rel="stylesheet" href="{{ asset('assets/login.css') }}">
+<link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+<title>Reset Password</title>
 
-        /* Background overlay */
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(32, 32, 32, 0.5);
-            z-index: -1;
-        }
-
-        /* Reset Password container */
-        .reset-container {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            width: 400px;
-            backdrop-filter: blur(10px);
-            position: relative;
-        }
-
-        /* Logo */
-        .logo {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
-            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
-        }
-
-        /* Form styling */
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Input fields */
-        .input-field {
-            width: 90%;
-            padding: 12px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            background: rgba(255, 255, 255, 0.3);
-            color: white;
-            outline: none;
-            transition: 0.3s;
-            box-shadow: inset 0px 0px 5px rgba(255, 255, 255, 0.3);
-            text-align: center;
-        }
-
-        .input-field::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .input-field:focus {
-            background: rgba(255, 255, 255, 0.5);
-            box-shadow: inset 0px 0px 10px rgba(255, 255, 255, 0.5);
-        }
-
-        /* Password field container */
-        .password-container {
-            position: relative;
-            width: 90%;
-        }
-
-        /* Show/Hide password icon */
-        .toggle-password {
-            position: absolute;
-            top: 50%;
-            right: 15px;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: white;
-            font-size: 18px;
-        }
-
-        /* Success messages */
-        .success-message {
-            color: green;
-            font-size: 14px;
-            margin-bottom: 10px;
-            background: rgba(0, 255, 0, 0.2);
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid green;
-            width: 90%;
-        }
-
-        /* Button */
-        .reset-btn {
-            width: 90%;
-            padding: 12px;
-            background: linear-gradient(90deg, #3498db, #1e87f0);
-            border: none;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: 0.3s;
-            box-shadow: 0px 4px 10px rgba(52, 152, 219, 0.4);
-        }
-
-        .reset-btn:hover {
-            background: linear-gradient(90deg, #1e87f0, #007aff);
-            box-shadow: 0px 6px 15px rgba(52, 152, 219, 0.5);
-        }
-
-        /* Links */
-        .links {
-            margin-top: 15px;
-            font-size: 14px;
-        }
-
-        .links a {
-            color: #f1f1f1;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .links a:hover {
-            text-decoration: underline;
-            color: #d9e2ec;
-        }
-    </style>
-</head>
-<body>
-
-<div class="reset-container">
-    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo">
-    <h2 style="color: white;">RESET PASSWORD</h2>
+<div class="login-container mt-5">
+    <!-- Circular Logo -->
+    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="login-logo">
 
     <!-- Success Message -->
-    @if (session('status'))
-        <p class="success-message">
-            {{ session('status') }}
-        </p>
-    @endif
+    <x-success-message />
 
-    <form method="POST" action="{{ route('password.store') }}">
+    <!-- Error Validation -->
+    <x-validation-errors />
+
+    <h3 class="text-light my-3">Reset Password</h3>
+    <p class="text-light">Enter your new password below.</p>
+
+    <!-- Reset Password Form -->
+    <form id="reset-password-form" method="POST" action="{{ route('password.update') }}">
         @csrf
-        <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
-        <input type="email" id="email" name="email" class="input-field" placeholder="Email" 
-               value="{{ old('email', $request->email) }}" required autofocus>
+        <!-- Hidden fields required by Laravel -->
+        <input type="hidden" name="token" value="{{ request()->route('token') }}">
+        <input type="hidden" name="email" value="{{ request()->email }}">
 
-        <div class="password-container">
-            <input type="password" id="password" name="password" class="input-field" placeholder="New Password" required>
-            <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+        <!-- New Password -->
+        <label class="form-label text-light" for="password">New Password</label>
+        <div class="position-relative mb-3">
+            <input type="password" id="password" name="password" class="form-control pe-5" required>
+            <span class="toggle-password" data-target="password">👁️</span>
         </div>
 
-        <div class="password-container">
-            <input type="password" id="password_confirmation" name="password_confirmation" class="input-field" 
-                   placeholder="Confirm Password" required>
-            <span class="toggle-password" onclick="togglePassword('password_confirmation')">👁️</span>
+        <!-- Password Checklist -->
+        <ul id="password-checklist" class="mt-2 small text-muted">
+            <li id="length">✖ At least 8 characters</li>
+            <li id="lowercase">✖ At least one lowercase letter</li>
+            <li id="uppercase">✖ At least one uppercase letter</li>
+            <li id="number">✖ At least one number</li>
+            <li id="special">✖ At least one special character (@$!%*?&)</li>
+        </ul>
+
+        <!-- Confirm Password -->
+        <label class="form-label text-light mt-3" for="password_confirmation">Confirm New Password</label>
+        <div class="position-relative mb-3">
+            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control pe-5" required>
+            <span class="toggle-password" data-target="password_confirmation">👁️</span>
         </div>
 
-        <button type="submit" class="reset-btn">Reset Password</button>
+        <button type="submit" class="btn btn-success w-100 mt-3">
+            🔑 Reset Password
+        </button>
     </form>
 
-    <div class="links">
-        <a href="{{ route('login') }}">Back to Login</a>
+    <div class="links mt-3">
+        <a href="{{ route('login') }}">← Back to Login</a>
     </div>
 </div>
 
+<style>
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+    font-size: 1.1rem;
+}
+</style>
+
 <script>
-    function togglePassword(fieldId) {
-        let field = document.getElementById(fieldId);
-        field.type = field.type === "password" ? "text" : "password";
+document.querySelectorAll(".toggle-password").forEach(icon => {
+    icon.addEventListener("click", function () {
+        const field = document.getElementById(this.dataset.target);
+        if (field.type === "password") {
+            field.type = "text";
+            this.textContent = "🙈";
+        } else {
+            field.type = "password";
+            this.textContent = "👁️";
+        }
+    });
+});
+
+const passwordInput = document.getElementById('password');
+const requirements = {
+    length: false,
+    lowercase: false,
+    uppercase: false,
+    number: false,
+    special: false
+};
+
+if(passwordInput){
+    passwordInput.addEventListener('input', function () {
+        const value = passwordInput.value;
+
+        requirements.length = value.length >= 8;
+        requirements.lowercase = /[a-z]/.test(value);
+        requirements.uppercase = /[A-Z]/.test(value);
+        requirements.number = /[0-9]/.test(value);
+        requirements.special = /[@$!%*?&]/.test(value);
+
+        for (const [rule, passed] of Object.entries(requirements)) {
+            const item = document.getElementById(rule);
+            item.style.color = passed ? "green" : "red";
+            item.textContent = (passed ? "✔ " : "✖ ") + item.textContent.replace(/✔ |✖ /, "");
+        }
+    });
+}
+
+document.getElementById("reset-password-form").addEventListener("submit", function (event) {
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("password_confirmation").value;
+
+    if (Object.values(requirements).includes(false)) {
+        alert("⚠ Password does not meet all the requirements.");
+        event.preventDefault();
+    } else if (password !== confirmPassword) {
+        alert("⚠ Passwords do not match!");
+        event.preventDefault();
     }
+});
 </script>
-
-<!-- Show success message before redirecting to login -->
-@if (session('status'))
-    <script>
-        window.onload = function() {
-            setTimeout(function() {
-                alert("{{ session('status') }}"); // Show success popup
-                window.location.href = "{{ route('login') }}"; // Redirect to login
-            }, 1000); // 1-second delay before redirection
-        };
-    </script>
-@endif
-
-</body>
-</html>

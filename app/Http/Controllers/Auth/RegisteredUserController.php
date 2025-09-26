@@ -44,7 +44,7 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'email_verified_at' => now(),
-            'utype' => 'CUST',
+            'utype' => 'CUSTOMER',
         ]);
 
         return redirect()->route('login')->with('success', 'Registration successful!');

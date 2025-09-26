@@ -1,6 +1,7 @@
 @extends('layout.shopping-base')
 
-@section('title', 'Product Showcase')
+<title>Shop Product</title>
+  <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
 
 <link rel="stylesheet" href="{{ asset('assets/product-listing.css') }}">
 
@@ -29,11 +30,11 @@
         <div class="card-bottom">
           <p>For as low as $500</p>
           @auth
-              @if(Auth::user()->utype === 'CUST')
-                  <a class="btn-add" href="#">Order Now</a>
+              @if(Auth::user()->utype === 'CUSTOMER')
+                  <a class="btn-add text-decoration-none" href="{{route('product-checkout1')}}">Order Now</a>
               @endif
           @else
-              <a class="btn-add" href="{{ route('login') }}">Login to Order</a>
+              <a class="btn-add text-decoration-none" href="{{ route('login') }}">Login to Order</a>
           @endauth
         </div>
       </div>
@@ -60,11 +61,11 @@
         <div class="card-bottom">
           <p>For as low as $1500</p>
           @auth
-              @if(Auth::user()->utype === 'CUST')
-                  <a class="btn-add" href="#">Order Now</a>
+              @if(Auth::user()->utype === 'CUSTOMER')
+                  <a class="btn-add text-decoration-none" href="{{route('product-checkout2')}}">Order Now</a>
               @endif
           @else
-              <a class="btn-add" href="{{ route('login') }}">Login to Order</a>
+              <a class="btn-add text-decoration-none" href="{{ route('login') }}">Login to Order</a>
           @endauth
         </div>
       </div>

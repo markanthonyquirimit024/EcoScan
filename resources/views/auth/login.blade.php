@@ -1,6 +1,5 @@
 @include('layout.shopping-base')  
   
-  <link rel="icon" type="image/png" href="{{ asset('favicon.ico') }}">
   <link rel="stylesheet" href="{{ asset('assets/login.css') }}">
   <title>Login</title>
 
@@ -10,6 +9,11 @@
     <!--Success Message-->
     <x-success-message/>
 
+    @if (session('status'))
+        <div class="alert alert-success text-center">
+            {{ session('status') }}
+        </div>
+    @endif
     <!-- Error Validation -->
     <x-validation-errors/>
     <h3 class="text-light">Login</h3>
@@ -22,11 +26,11 @@
     <button type="button" id="toggle-password">👁️</button>
   </div>
 
-      <button type="submit" class="login-btn">LOGIN</button>
+      <button type="submit" class="login-btn">Login</button>
     </form>
 
     <div class="links">
-      <a href="{{ route('password.request') }}">Forgot Password?</a><br>
+      <a href="{{ route('forgot-password') }}">Forgot Password?</a><br>
     </div>
   </div>
 

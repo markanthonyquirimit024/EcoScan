@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 
 class TwoFactorCodeMail extends Mailable
 {
-    use SerializesModels; // ❌ Removed Queueable to send instantly
+    use SerializesModels;
 
     public $code;
 

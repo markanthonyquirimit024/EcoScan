@@ -18,8 +18,8 @@ class AdminSeeder extends Seeder
                 'first_name' => 'Admin', 
                 'last_name' => 'Admin',
                 'email' => 'admin@phinmaed.com',
-                'password' => Hash::make('admin'),
-                'utype' => 'ADM',
+                'password' => Hash::make('Admin123'),
+                'utype' => 'ADMIN',
                 'email_verified_at' => Carbon::now(),
             ]);
         }

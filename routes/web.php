@@ -7,6 +7,10 @@ use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\ShoppingController;
 
 
@@ -54,6 +58,12 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])->name('forgot-password');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'store'])->name('password-email');
+
+Route::get('/reset-password/{token}', [ResetPasswordController::class, 'index'])->name('password.reset');
+Route::post('/reset-password', [ResetPasswordController::class, 'store'])->name('password.update');
+
 /*
 |--------------------------------------------------------------------------
 | Registration Routes
@@ -84,6 +94,16 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/home', [ShoppingController::class, 'index'])->name('home');
 Route::get('/product/order-now', [ShoppingController::class, 'orderbtn'])->name('orderbtn');
+Route::get('/product/checkout/1', [ShoppingController::class, 'checkout1'])->name('product-checkout1');
+Route::get('/product/checkout/2', [ShoppingController::class, 'checkout2'])->name('product-checkout2');
+Route::get('/my-order', [ShoppingController::class, 'MyOrderView'])->name('MyOrderView');
+
+Route::get('/admin/product', [ProductController::class,'index'])->name('product-index');
+
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::put('/profile', [ProfileController::class, 'update_profile'])->name('profile.update');
+Route::post('/profile', [ProfileController::class, 'change_password'])->name('profile.change_password');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 /*
 |--------------------------------------------------------------------------
 | Profile Routes (Require Authentication)

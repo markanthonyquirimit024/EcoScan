@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+
 
   <style>
     body {
@@ -139,10 +141,6 @@
             <a class="nav-link" href="{{route('orderbtn')}}">Shop</a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
-          </li>
-
           @guest
             <li class="nav-item">
               <a class="nav-link" href="{{ route('login') }}">Login</a>
@@ -153,19 +151,39 @@
           @endguest
 
           @auth
+            @if(Auth::user()->utype === 'ADM')
             <li class="nav-item">
-              <a class="nav-link" href="#">
-                <i class="bi bi-person-circle"></i> {{ Auth::user()->first_name }}
+              <a class="nav-link" href="{{route('product-index')}}">Manage Product</a>
+            </li>
+            @endif
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{route('MyOrderView')}}">My Orders</a>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-person-circle me-1"></i> {{ Auth::user()->first_name }}
               </a>
-            </li>
-            <li class="nav-item">
-              <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" id="logout-btn" onclick="return confirm('Are you sure you want to logout this account?')">
-                  Logout
-                </button>
-              </form>
-            </li>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                  <li>
+                      <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                          <i class="bi bi-person-lines-fill me-2"></i> Profile
+                      </a>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                      <form method="POST" action="{{ route('logout') }}">
+                          @csrf
+                          <button type="submit" class="dropdown-item text-danger"
+                                  onclick="return confirm('Are you sure you want to logout this account?')">
+                              <i class="bi bi-box-arrow-right me-2"></i> Logout
+                          </button>
+                      </form>
+                  </li>
+              </ul>
+          </li>
           @endauth
         </ul>
       </div>

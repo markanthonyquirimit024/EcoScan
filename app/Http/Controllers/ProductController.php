@@ -2,42 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Analyst;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use Illuminate\Validation\Rules\Password;
-use Illuminate\Support\Facades\Hash;
 
-class ShoppingController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('home');
+        $products = Product::orderBy('id','desc')->paginate(10);
+        return view ('Product.index', compact('products'));
     }
 
-    public function orderbtn()
-    {
-        return view('product-showcase');
-    }
-    public function checkout1()
-    {
-        return view('product1-checkout');
-    }
-
-    public function checkout2()
-    {
-        return view('product2-checkout');
-    }
-
-    public function MyOrderView()
-     {
-        return view('order');   
-    }
     /**
      * Store a newly created resource in storage.
      */
