@@ -181,13 +181,12 @@
                   </li>
                   <li><hr class="dropdown-divider"></li>
                   <li>
-                      <form method="POST" action="{{ route('logout') }}">
-                          @csrf
-                          <button type="submit" class="dropdown-item text-danger"
-                                  onclick="return confirm('Are you sure you want to logout this account?')">
-                              <i class="bi bi-box-arrow-right me-2"></i> Logout
-                          </button>
-                      </form>
+                  <form method="POST" action="{{ route('logout') }}" id="logout-form"> 
+                    @csrf 
+                    <button type="submit" class="dropdown-item text-light" id="logout-btn"> 
+                      <i class="bi bi-box-arrow-right me-2"></i> Logout 
+                    </button> 
+                  </form>
                   </li>
               </ul>
           </li>
@@ -196,10 +195,13 @@
       </div>
     </div>
   </nav>
+  
 
   
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
   <!-- THEME HANDLER (runs after DOM ready) -->
   <script>
@@ -244,6 +246,30 @@
         applyTheme(e.detail);
       });
     })();
+
+   document.addEventListener('DOMContentLoaded', function () {
+        const logoutBtn = document.getElementById('logout-btn');
+        const logoutForm = document.getElementById('logout-form');
+
+        logoutBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Logout?',
+                text: "Are you sure you want to logout this account?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, logout',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    logoutForm.submit();
+                }
+            });
+        });
+    });
   </script>
 </body>
 </html>
