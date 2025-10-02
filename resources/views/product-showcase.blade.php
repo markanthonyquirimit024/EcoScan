@@ -1,8 +1,7 @@
 @extends('layout.shopping-base')
 
 <title>Shop Product</title>
-  <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
-
+<link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
 <link rel="stylesheet" href="{{ asset('assets/product-listing.css') }}">
 
 <main>
@@ -11,69 +10,48 @@
     <p>Discover the latest smart plastic detection sensors designed to help you reduce waste and track your daily plastic usage effectively.</p>
 
     <div class="product-container">
-      <!-- Product 1 -->
-      <div class="product-card">
-        <div class="slider-container">
-          <div class="slider-images">
-            <img src="{{ asset('images/slide5.jpg') }}" alt="Plastic Sensor 1">
-            <img src="{{ asset('images/slide6.jpg') }}" alt="Plastic Sensor 1 alt">
+      @foreach($products as $product)
+        <div class="product-card">
+          <!-- Product Image -->
+          <div class="slider-container">
+            @if($product->image)
+              <div class="slider-images">
+                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
+              </div>
+            @else
+              <div class="slider-images">
+                <img src="{{ asset('images/no-image.png') }}" alt="No image">
+              </div>
+            @endif
           </div>
-          <button class="slider-btn prev-btn">&#10094;</button>
-          <button class="slider-btn next-btn">&#10095;</button>
-        </div>
-        <h3>Plastic Detection Sensor 1</h3>
-        <ul>
-          <li>Smart plastic detection technology</li>
-          <li>Enhanced detection accuracy</li>
-          <li>Tracks daily plastic usage</li>
-        </ul>
-        <div class="card-bottom">
-          <p>For as low as $500</p>
-          @auth
-              @if(Auth::user()->utype === 'CUSTOMER')
-                  <a class="btn-add text-decoration-none" href="{{route('product-checkout1')}}">Order Now</a>
-              @endif
-          @else
-              <a class="btn-add text-decoration-none" href="{{ route('login') }}">Login to Order</a>
-          @endauth
-        </div>
-      </div>
 
-      <!-- Product 2 -->
-      <div class="product-card">
-        <div class="slider-container">
-          <div class="slider-images">
-            <img src="{{ asset('images/slide5.jpg') }}" alt="Plastic Sensor 2">
-            <img src="{{ asset('images/slide7.jpg') }}" alt="Plastic Sensor 2 alt">
-          </div>
-          <button class="slider-btn prev-btn">&#10094;</button>
-          <button class="slider-btn next-btn">&#10095;</button>
-        </div>
-        <h3>Plastic Detection Sensor 2</h3>
-        <ul>
-          <li>Lightweight and portable</li>
-          <li>Smart plastic detection technology</li>
-          <li>Enhanced detection accuracy</li>
-          <li>Tracks daily plastic usage</li>
-          <li>Personalized EcoScan website access</li>
-          <li>Includes sustainability web dashboard</li>
-        </ul>
-        <div class="card-bottom">
-          <p>For as low as $1500</p>
-          @auth
+          <!-- Product Info -->
+          <h3 class="text-center">{{ $product->name }}</h3>
+          <p>{{ $product->description }}</p>
+          <ul>
+            @foreach($product->features as $feature)
+              <li>{{ $feature->feature }}</li>
+            @endforeach
+          </ul>
+
+          <!-- Order Form -->
+          <div class="card-bottom">
+            <p>For as low as ${{ number_format($product->price, 2) }}</p>
+
+            @auth
               @if(Auth::user()->utype === 'CUSTOMER')
-                  <a class="btn-add text-decoration-none" href="{{route('product-checkout2')}}">Order Now</a>
+                <a href="{{ route('orders.create', $product->slug) }}" class="btn btn-primary">Order Now</a>
               @endif
-          @else
-              <a class="btn-add text-decoration-none" href="{{ route('login') }}">Login to Order</a>
-          @endauth
+            @else
+              <a class="btn btn-warning text-decoration-none" href="{{ route('login') }}">Login to Order</a>
+            @endauth
+          </div>
         </div>
-      </div>
+      @endforeach
     </div>
   </section>
 </main>
 
-<!-- Footer -->
 <footer>
   &copy; 2025 EcoScan. All rights reserved.
 </footer>
@@ -86,46 +64,69 @@
   </label>
 </div>
 
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-    // =====================
-    // Theme Toggle
-    // =====================
-    const toggle = document.getElementById('mode-toggle');
-    const body = document.body;
+  // =====================
+  // Theme Toggle
+  // =====================
+  const toggle = document.getElementById('mode-toggle');
+  const body = document.body;
 
-    // Initialize theme from localStorage
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        body.classList.add('dark-mode');
-        toggle.checked = true;
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    body.classList.add('dark-mode');
+    toggle.checked = true;
+  }
+
+  toggle.addEventListener('change', () => {
+    if (toggle.checked) {
+      body.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      body.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
     }
+  });
 
-    toggle.addEventListener('change', () => {
-        if (toggle.checked) {
-            body.classList.add('dark-mode');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            body.classList.remove('dark-mode');
-            localStorage.setItem('theme', 'light');
-        }
+  // =====================
+  // SweetAlert2 Toast
+  // =====================
+  @if(session('success'))
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: "{{ session('success') }}",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true
     });
+  @endif
 
-    // =====================
-    // Image Slider
-    // =====================
-    document.querySelectorAll('.product-card').forEach(card => {
-        const images = card.querySelector('.slider-images');
-        const imgs = images.querySelectorAll('img');
-        const prevBtn = card.querySelector('.prev-btn');
-        const nextBtn = card.querySelector('.next-btn');
-        let index = 0;
 
-        function showSlide(i) {
-            index = (i + imgs.length) % imgs.length;
-            images.style.transform = `translateX(-${index * 100}%)`;
-        }
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".order-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            let slug = this.dataset.slug;
+            let form = document.getElementById("order-form-" + slug);
 
-        prevBtn.addEventListener('click', () => showSlide(index - 1));
-        nextBtn.addEventListener('click', () => showSlide(index + 1));
+            Swal.fire({
+                title: "Confirm Order",
+                text: "Do you want to place this order?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Order Now"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
     });
+});
+
 </script>

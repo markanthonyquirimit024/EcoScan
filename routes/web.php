@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResetPasswordController;
@@ -93,17 +94,34 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::get('/home', [ShoppingController::class, 'index'])->name('home');
-Route::get('/product/order-now', [ShoppingController::class, 'orderbtn'])->name('orderbtn');
 Route::get('/product/checkout/1', [ShoppingController::class, 'checkout1'])->name('product-checkout1');
 Route::get('/product/checkout/2', [ShoppingController::class, 'checkout2'])->name('product-checkout2');
-Route::get('/my-order', [ShoppingController::class, 'MyOrderView'])->name('MyOrderView');
 
 Route::get('/admin/product', [ProductController::class,'index'])->name('product-index');
-
+Route::get('/admin/product/create',[ProductController::class, 'store'])->name('product-create');
+Route::post('/admin/product/store',[ProductController::class, 'StoreRequest'])->name('product-store');
+Route::delete('/admin/product/{id}', [ProductController::class, 'destroy'])->name('product-destroy');
+Route::put('/admin/product/{slug}', [ProductController::class, 'update'])->name('product-update');
+Route::get('/admin/product/{slug}', [ProductController::class, 'edit'])->name('product-edit');
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 Route::put('/profile', [ProfileController::class, 'update_profile'])->name('profile.update');
 Route::post('/profile', [ProfileController::class, 'change_password'])->name('profile.change_password');
 Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+
+Route::get('/product/shop', [ShoppingController::class, 'orderbtn'])->name('orderbtn');
+Route::get('/product/order/{slug}/create', [OrderController::class, 'create'])->name('orders.create');
+Route::post('/product/order-now/{slug}', [OrderController::class, 'store'])->name('orders.store');
+Route::get('/my-orders', [OrderController::class, 'index'])->name('orders.index');
+Route::post('/my-orders/{id}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+Route::delete('/my-orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
+Route::post('/my-orders/{id}/update-address', [OrderController::class, 'updateAddress'])->name('orders.updateAddress');
+
+
+
+Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders.index');
+Route::post('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+
 /*
 |--------------------------------------------------------------------------
 | Profile Routes (Require Authentication)

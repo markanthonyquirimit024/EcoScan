@@ -28,18 +28,15 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
 
-        // ✅ Attempt login
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            // ✅ Clear failed attempts if login successful
             RateLimiter::clear($this->throttleKey($request));
 
             return redirect()->intended(route('home'))
                              ->with('success', 'Welcome back!');
         }
 
-        // ❌ Wrong credentials → increment failed attempts
         RateLimiter::hit($this->throttleKey($request));
 
         return back()->withErrors([
@@ -56,7 +53,6 @@ class LoginController extends Controller
     }
 
 
-    // ✅ Rate Limiting Helpers
     protected function ensureIsNotRateLimited(Request $request)
     {
         if (!RateLimiter::tooManyAttempts($this->throttleKey($request), 5)) {

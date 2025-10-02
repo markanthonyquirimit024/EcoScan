@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Analyst;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -22,21 +23,8 @@ class ShoppingController extends Controller
 
     public function orderbtn()
     {
-        return view('product-showcase');
-    }
-    public function checkout1()
-    {
-        return view('product1-checkout');
-    }
-
-    public function checkout2()
-    {
-        return view('product2-checkout');
-    }
-
-    public function MyOrderView()
-     {
-        return view('order');   
+        $products = Product::all();
+        return view('product-showcase', compact('products'));
     }
     /**
      * Store a newly created resource in storage.

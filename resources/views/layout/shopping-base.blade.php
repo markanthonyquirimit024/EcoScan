@@ -18,6 +18,7 @@
       margin: 0;
       color: #fff;
       background: linear-gradient(135deg, #0d0d0d, #1a3d1f);
+      
     }
 
     /* Navbar base */
@@ -151,15 +152,21 @@
           @endguest
 
           @auth
-            @if(Auth::user()->utype === 'ADM')
+            @if(Auth::user()->utype === 'ADMIN')
             <li class="nav-item">
-              <a class="nav-link" href="{{route('product-index')}}">Manage Product</a>
+              <a class="nav-link" href="{{route('product-index')}}">Product Management</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{route('admin.orders.index')}}">Order Management</a>
             </li>
             @endif
 
+            @if(Auth::user()->utype === 'CUSTOMER')
             <li class="nav-item">
-              <a class="nav-link" href="{{route('MyOrderView')}}">My Orders</a>
+              <a class="nav-link" href="{{route('orders.index')}}">My Orders</a>
             </li>
+            @endif
 
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button"

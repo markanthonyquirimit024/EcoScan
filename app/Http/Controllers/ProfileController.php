@@ -81,14 +81,21 @@ public function change_password(Request $request)
     /**
      * Delete the user's account.
      */
-    public function destroy(Request $request): RedirectResponse
-    {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
+public function destroy(Request $request): RedirectResponse
+{
+    // Validate password first
+    $request->validateWithBag('userDeletion', [
+        'password' => ['required'],
+    ]);
 
-        $user = $request->user();
+    $user = $request->user();
 
+    // Check if the entered password is correct
+    if (!Hash::check($request->password, $user->password)) {
+        return back()->with('error', 'Incorrect password. Please try again.');
+    }
+
+    try {
         Auth::logout();
 
         $user->delete();
@@ -96,6 +103,9 @@ public function change_password(Request $request)
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Redirect::to('/');
+        return Redirect::to('/')->with('success', 'Your account has been deleted successfully.');
+    } catch (\Exception $e) {
+        return back()->with('error', 'Something went wrong while deleting your account. Please try again.');
     }
+}
 }

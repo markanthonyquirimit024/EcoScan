@@ -1,7 +1,7 @@
 @include('layout.shopping-base')
 
 <link rel="stylesheet" href="{{ asset('assets/register.css') }}">
-<title>Register</title>
+<title>EcoScan - Register</title>
 
 <div class="form-container">
   

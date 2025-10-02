@@ -1,107 +1,103 @@
 @extends('layout.shopping-base')
 
-@section('title', 'Products Table')
+<link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+<title>Manage Products</title>
 
-<div class="container py-5 text-center">
-    <h2 class="mb-4">Product List</h2>
+<div class="d-flex justify-content-center align-items-start" style="min-height: 100vh; padding-top: 80px;">
+    <div style="width: 90%;">
+        <!-- Sticky Header -->
+        <div class="row mb-4 sticky-top bg-dark py-3" style="z-index: 100;">
+            <div class="col text-start">
+                <h2 class="text-white mb-0">Manage Products</h2>
+            </div>
+            <div class="col text-center">
+                <form action="{{ route('product-index') }}" method="GET" class="d-flex">
+                    <input type="text"
+                           name="search"
+                           class="form-control me-2"
+                           placeholder="Search products..."
+                           value="{{ request('search') }}">
+                    <button type="submit" class="btn btn-outline-light">Search</button>
+                </form>
+            </div>
+            <div class="col text-end">
+                <a class="btn btn-success" href="{{ route('product-create') }}">+ Add Product</a>
+            </div>
+        </div>
 
-    <!-- Add Product Button -->
-     <p>Product</p>
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">
-        Create Product
-    </button>
+        <x-success-message/>
+        <x-validation-errors/>
 
-    <!-- Products Table -->
-    <table class="table table-dark table-bordered mx-auto" style="width: 80%;">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Slug</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="table-active">
-                <th scope="row">1</th>
-                <td>Sample Product</td>
-                <td>sample-product</td>
-                <td>Sample description</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+        <!-- Table -->
+        <div style="max-height: 65vh; overflow-y: auto;">
+            <table class="table table-dark table-bordered text-center mb-0" style="table-layout: fixed; width: 100%;">
+                <thead class="sticky-top bg-dark" style="z-index: 99;">
+                    <tr>
+                        <th style="width: 60px;">Id</th>
+                        <th style="width: 150px;">Image</th>
+                        <th style="width: 180px;">Name</th>
+                        <th style="width: 180px;">Slug</th>
+                        <th style="width: 120px;">Price</th>
+                        <th style="width: 200px;">Description</th>
+                        <th style="width: 320px;">Features</th>
+                        <th style="width: 150px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($products as $product)
+                        <tr>
+                            <td>{{ $product->id }}</td>
+                            <td>
+                                @if($product->image)
+                                    <img src="{{ asset('storage/' . $product->image) }}" 
+                                         alt="{{ $product->name }}" 
+                                         class="img-thumbnail" 
+                                         style="max-width: 100px; max-height: 100px;">
+                                @else
+                                    <span class="text-muted">No image</span>
+                                @endif
+                            </td>
+                            <td>{{ $product->name }}</td>
+                            <td>{{ $product->slug }}</td>
+                            <td>${{ number_format($product->price, 2) }}</td>
+                            <td class="text-start" style="white-space: normal; word-wrap: break-word;">
+                                {{ Str::limit($product->description, 50) }}
+                            </td>
+                            <td class="text-start" style="white-space: normal; word-wrap: break-word;">
+                                <ul class="list-disc pl-4 mb-0">
+                                    @foreach ($product->features as $feature)
+                                        <li>{{ $feature->feature }}</li>
+                                    @endforeach
+                                </ul>
+                            </td>
+                            <td>
+                                <a class="btn btn-warning my-2" href="{{route('product-edit', $product->slug)}}">
+                                    ✏️ Edit
+                                </a>
+                                <form action="{{ route('product-destroy', $product->slug) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this product?')">🗑️ Delete</button>
+                                </form>
+                            </td>
+                        </tr>
 
-<!-- Add Product Modal -->
-<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content bg-dark text-light">
-            <form action="" method="POST">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
+                    @empty
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                <strong>No results found.</strong>
+                                @if(request('search'))
+                                    <div class="small">Try adjusting your search (e.g. "<em>{{ request('search') }}</em>").</div>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
-                    <!-- Product Name -->
-                    <div class="mb-3">
-                        <label class="form-label">Product Name</label>
-                        <input type="text" name="name" class="form-control" required>
-                    </div>
-
-                    <!-- Slug -->
-                    <div class="mb-3">
-                        <label class="form-label">Slug</label>
-                        <input type="text" name="slug" class="form-control" required>
-                    </div>
-
-                    <!-- Description -->
-                    <div class="mb-3">
-                        <label class="form-label">Description</label>
-                        <textarea name="description" class="form-control" rows="3" required></textarea>
-                    </div>
-
-                    <!-- Features -->
-                    <div class="mb-3">
-                        <label class="form-label">Features (Max 200 chars each)</label>
-                        <div id="features-wrapper">
-                            <div class="input-group mb-2 feature-item">
-                                <input type="text" name="features[]" class="form-control" maxlength="200" placeholder="Enter feature" required>
-                                <button type="button" class="btn btn-success add-feature">+</button>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Add Product</button>
-                </div>
-            </form>
+        <div class="mt-3 d-flex justify-content-center">
+            {{ $products->appends(request()->query())->links() }}
         </div>
     </div>
 </div>
-
-<!-- jQuery (needed for add/remove feature logic) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    $(document).ready(function () {
-        // Add new feature field
-        $(document).on('click', '.add-feature', function () {
-            let newField = `
-                <div class="input-group mb-2 feature-item">
-                    <input type="text" name="features[]" class="form-control" maxlength="200" placeholder="Enter feature" required>
-                    <button type="button" class="btn btn-danger remove-feature">-</button>
-                </div>
-            `;
-            $("#features-wrapper").append(newField);
-        });
-
-        // Remove feature field
-        $(document).on('click', '.remove-feature', function () {
-            $(this).closest('.feature-item').remove();
-        });
-    });
-</script>

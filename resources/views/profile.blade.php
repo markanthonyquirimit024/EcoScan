@@ -1,23 +1,29 @@
 @extends('layout.shopping-base')
 
 <title>My Profile</title>
-  <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
-
+<link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
 
 <div class="container py-5">
     <h2 class="mb-4 my-5 text-center">⚙️ My Profile</h2>
 
-        @if(session('success'))
+    @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
-    @if($errors->any())
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if ($errors->any())
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <ul class="mb-0">
-                @foreach($errors->all() as $error)
+                @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
@@ -27,15 +33,15 @@
 
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <div class="card shadow-sm p-4">
+            <div class="card shadow-sm p-4 bg-dark text-light">
                 <!-- Profile Overview -->
                 <div class="d-flex align-items-center mb-4">
                     <img src="{{ asset('images/person.png') }}" alt="Profile Picture" 
                         class="rounded-circle me-3" width="120" height="120">
                     <div>
                         <h4 class="mb-1">{{ Auth::user()->first_name }}</h4>
-                        <p class="text-muted mb-0">Role: {{ Auth::user()->utype }}</p>
-                        <p class="text-muted small">Member since: {{ Auth::user()->created_at->format('m-d-Y') }}</p>
+                        <p class="mb-0 text-light">Role: {{ Auth::user()->utype }}</p>
+                        <p class="small text-light">Member since: {{ Auth::user()->created_at->format('m-d-Y') }}</p>
                     </div>
                 </div>
 
@@ -55,7 +61,7 @@
                 <div class="tab-content">
                     <!-- Profile Info -->
                     <div class="tab-pane fade show active" id="profile">
-                        <form action="{{ route('profile.edit') }}" method="POST" enctype="multipart/form-data">
+                        <form id="edit-profile-form" action="{{ route('profile.edit') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="row mb-3">
@@ -72,7 +78,7 @@
                                 <label class="form-label">Email</label>
                                 <input type="email" name="email" class="form-control" value="{{ Auth::user()->email }}">
                             </div>
-                            <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to edit your profile?')">💾 Save Changes</button>
+                            <button type="submit" class="btn btn-success">💾 Save Changes</button>
                         </form>
                     </div>
 
@@ -96,7 +102,7 @@
                             </div>
 
                             <!-- Password Checklist -->
-                            <ul id="password-checklist" class="mt-2 small text-muted">
+                            <ul id="password-checklist" class="mt-2 small text-light">
                                 <li id="length">✖ At least 8 characters</li>
                                 <li id="lowercase">✖ At least one lowercase letter</li>
                                 <li id="uppercase">✖ At least one uppercase letter</li>
@@ -111,7 +117,7 @@
                                 <span class="toggle-password" data-target="password_confirmation">👁️</span>
                             </div>
 
-                            <button type="submit" class="btn btn-success w-100 mt-3" onclick="return confirm('Are you sure you want to change your password?')">
+                            <button type="submit" class="btn btn-success w-100 mt-3">
                                 🔑 Update Password
                             </button>
                         </form>
@@ -119,14 +125,14 @@
 
                     <!-- Danger Zone -->
                     <div class="tab-pane fade" id="danger">
-                        <form action="{{ route('profile.destroy') }}" method="POST">
+                        <form id="delete-account-form" action="{{ route('profile.destroy') }}" method="POST">
                             @csrf
                             @method('DELETE')
                             <div class="mb-3">
                                 <label class="form-label">Confirm Password</label>
                                 <input type="password" name="password" class="form-control" placeholder="Enter Password" required>
                             </div>
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete your account?')">🗑️ Delete Account</button>
+                            <button type="submit" class="btn btn-danger">🗑️ Delete Account</button>
                         </form>
                     </div>
                 </div>
@@ -147,7 +153,9 @@
 }
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+// Toggle password visibility
 document.querySelectorAll(".toggle-password").forEach(icon => {
     icon.addEventListener("click", function () {
         const field = document.getElementById(this.dataset.target);
@@ -161,14 +169,9 @@ document.querySelectorAll(".toggle-password").forEach(icon => {
     });
 });
 
+// Password validation
 const passwordInput = document.getElementById('password');
-const requirements = {
-    length: false,
-    lowercase: false,
-    uppercase: false,
-    number: false,
-    special: false
-};
+const requirements = { length: false, lowercase: false, uppercase: false, number: false, special: false };
 
 if(passwordInput){
     passwordInput.addEventListener('input', function () {
@@ -182,22 +185,71 @@ if(passwordInput){
 
         for (const [rule, passed] of Object.entries(requirements)) {
             const item = document.getElementById(rule);
-            item.style.color = passed ? "green" : "red";
+            item.style.color = passed ? "lightgreen" : "red";
             item.textContent = (passed ? "✔ " : "✖ ") + item.textContent.replace(/✔ |✖ /, "");
         }
     });
 }
 
+// Profile Edit Confirmation
+document.getElementById("edit-profile-form").addEventListener("submit", function(e){
+    e.preventDefault();
+    Swal.fire({
+        title: 'Save Profile Changes?',
+        text: "Do you want to update your profile info?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, save it!',
+        cancelButtonText: 'Cancel'
+    }).then(result => {
+        if(result.isConfirmed) this.submit();
+    });
+});
+
+// Change Password Validation + SweetAlert
 document.getElementById("change-password-form").addEventListener("submit", function (event) {
+    event.preventDefault();
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("password_confirmation").value;
 
     if (Object.values(requirements).includes(false)) {
-        alert("⚠ Password does not meet all the requirements.");
-        event.preventDefault();
+        Swal.fire("⚠ Invalid Password", "Password does not meet all the requirements.", "error");
     } else if (password !== confirmPassword) {
-        alert("⚠ Passwords do not match!");
-        event.preventDefault();
+        Swal.fire("⚠ Password Mismatch", "Passwords do not match!", "error");
+    } else {
+        Swal.fire({
+            title: 'Change Password?',
+            text: "Are you sure you want to update your password?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, update it!'
+        }).then(result => {
+            if(result.isConfirmed) this.submit();
+        });
     }
 });
+
+// Delete Account Confirmation
+document.getElementById("delete-account-form").addEventListener("submit", function(e){
+    e.preventDefault();
+    Swal.fire({
+        title: 'Delete Account?',
+        text: "This action cannot be undone. Are you sure?",
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonText: 'Cancel',
+        confirmButtonText: 'Yes, delete it!'
+    }).then(result => {
+        if(result.isConfirmed) this.submit();
+    });
+});
+
+    setTimeout(() => {
+        let alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            let bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 3000);
 </script>

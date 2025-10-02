@@ -1,7 +1,7 @@
 @include('layout.shopping-base')  
   
   <link rel="stylesheet" href="{{ asset('assets/login.css') }}">
-  <title>Login</title>
+  <title>EcoScan - Login</title>
 
   <div class="login-container">
     <!-- Circular Logo -->
