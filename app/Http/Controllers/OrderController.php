@@ -132,7 +132,7 @@ public function updateAddress(Request $request, $id)
         $order = Order::findOrFail($id);
 
         $request->validate([
-            'status' => 'required|in:pending,approved,shipped,completed',
+            'status' => 'required|in:pending,approved,shipped,completed,cancelled',
         ]);
 
         $order->update(['status' => $request->status]);

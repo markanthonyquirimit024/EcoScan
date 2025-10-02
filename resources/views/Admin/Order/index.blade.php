@@ -26,7 +26,7 @@
                     <thead class="sticky-top bg-dark" style="z-index: 99;">
                         <tr>
                             <th style="width: 60px;">Order #</th>
-                            <th style="width: 200px;">User Contact Info</th>
+                            <th style="width: 200px;">Customer Contact Info</th>
                             <th style="width: 200px;">Product</th>
                             <th style="width: 80px;">Quantity</th>
                             <th style="width: 120px;">Total</th>

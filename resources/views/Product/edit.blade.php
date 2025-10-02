@@ -4,8 +4,7 @@
 <title>Edit Product</title>
 
 <style>
-    #h2
-    {
+    #h2 {
         padding-top: 50px;
     }
 </style>
@@ -13,19 +12,8 @@
 <div class="container py-5">
     <h2 id="h2">Edit Product</h2>
 
-    <!-- Error / Success Messages -->
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     <!-- Form -->
-    <form action="{{ route('product-update', $product->slug) }}" method="POST" enctype="multipart/form-data">
+    <form id="edit-product-form" action="{{ route('product-update', $product->slug) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -100,12 +88,57 @@
     </form>
 </div>
 
-<!-- Feature JS -->
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- SweetAlert Messages -->
+@if (session('success'))
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: "{{ session('success') }}",
+                confirmButtonColor: '#3085d6'
+            });
+        });
+    </script>
+@endif
+
+@if (session('error'))
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: "{{ session('error') }}",
+                confirmButtonColor: '#d33'
+            });
+        });
+    </script>
+@endif
+
+@if ($errors->any())
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: `{!! implode('<br>', $errors->all()) !!}`,
+                confirmButtonColor: '#d33'
+            });
+        });
+    </script>
+@endif
+
+<!-- Feature JS + Confirmation -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const wrapper = document.getElementById('features-wrapper');
         const addBtn = document.getElementById('add-feature');
+        const form = document.getElementById('edit-product-form');
 
+        // Add Feature
         addBtn.addEventListener('click', function () {
             const div = document.createElement('div');
             div.classList.add('input-group', 'mb-2');
@@ -116,10 +149,29 @@
             wrapper.appendChild(div);
         });
 
+        // Remove Feature
         wrapper.addEventListener('click', function (e) {
             if (e.target.classList.contains('remove-feature')) {
                 e.target.closest('.input-group').remove();
             }
+        });
+
+        // SweetAlert confirmation before submitting
+        form.addEventListener("submit", function (e) {
+            e.preventDefault(); // stop form
+            Swal.fire({
+                title: 'Update Product?',
+                text: "Are you sure you want to save these changes?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, update it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
     });
 </script>

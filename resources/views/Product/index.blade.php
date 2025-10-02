@@ -74,10 +74,10 @@
                                 <a class="btn btn-warning my-2" href="{{route('product-edit', $product->slug)}}">
                                     ✏️ Edit
                                 </a>
-                                <form action="{{ route('product-destroy', $product->slug) }}" method="POST" style="display:inline;">
+                                <form id="delete-product-form-{{ $product->id }}" action="{{ route('product-destroy', $product->slug) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this product?')">🗑️ Delete</button>
+                                    <button type="button" class="btn btn-danger delete-btn">🗑️ Delete</button>
                                 </form>
                             </td>
                         </tr>
@@ -101,3 +101,27 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const form = this.closest('form');
+            Swal.fire({
+                title: 'Delete Product?',
+                text: "This action cannot be undone!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
